@@ -1,8 +1,13 @@
 <template>
-    <div>home</div>
+    <div>signup</div>
 </template>
 
 <script>
     export default {
+
     }
 </script>
+
+<style scoped>
+
+</style>
