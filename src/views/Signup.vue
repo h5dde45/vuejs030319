@@ -10,19 +10,20 @@
                         <v-alert :value="error" type="warning">
                             {{error}}
                         </v-alert>
-                        <v-form>
+                        <v-form v-model="valid">
                             <v-text-field prepend-icon="person" name="login"
                                           label="Почта" type="email" required
-                                          v-model="email"></v-text-field>
+                                          v-model="email" :rules="emailRules"></v-text-field>
                             <v-text-field id="password" prepend-icon="lock" name="password"
                                           required label="Пароль" v-model="password"
-                                          type="password"></v-text-field>
+                                          type="password" :rules="passwordRules"></v-text-field>
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="primary" @click.prevent="signup"
-                        :loading="processing" :disable="processing">Зарегистрироваться</v-btn>
+                               :loading="processing" :disable="processing || !valid">Зарегистрироваться
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-flex>
@@ -35,23 +36,32 @@
         data() {
             return {
                 email: null,
-                password: null
+                password: null,
+                valid: false,
+                emailRules: [
+                    (v) => !!v || 'Введите почту',
+                    (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Неправильная почта'
+                ],
+                passwordRules: [
+                    (v) => !!v || 'Введите пароль',
+                    (v) => (v && v.length >= 6) || 'Пароль - минимум 6 символов'
+                ]
             }
         },
         computed: {
             error() {
                 return this.$store.getters.getError
             },
-            processing(){
+            processing() {
                 return this.$store.getters.getProcessing
             },
-            isUserAuthenticated(){
+            isUserAuthenticated() {
                 return this.$store.getters.isUserAuthenticated
             }
         },
-        watch:{
-            isUserAuthenticated(val){
-                if(val === true){
+        watch: {
+            isUserAuthenticated(val) {
+                if (val === true) {
                     this.$router.push('/')
                 }
             }

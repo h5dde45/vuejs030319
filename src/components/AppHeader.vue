@@ -27,6 +27,10 @@
                     <v-icon left v-html="item.icon"></v-icon>
                     {{item.title}}
                 </v-btn>
+                <v-btn flat @click.prevent="signout" v-if="isUserAuthenticated">
+                    <v-icon left >directions_run</v-icon>
+                    Выйти
+                </v-btn>
             </v-toolbar-items>
         </v-toolbar>
     </div>
@@ -56,19 +60,9 @@
                             icon: 'account_box',
                             title: 'Кабинет',
                             route: '/profile',
-                        },
-                        {
-                            icon: 'directions_run',
-                            title: 'Выйти',
-                            route: '/logout',
                         }
                     ]
                     : [
-                        {
-                            icon: 'visibility',
-                            title: 'Читать',
-                            route: '/books',
-                        },
                         {
                             icon: 'input',
                             title: 'Войти',
@@ -80,6 +74,22 @@
                             route: '/signup',
                         }
                     ]
+            }
+        },
+        watch:{
+            isUserAuthenticated(val){
+                if(val === false){
+                    this.$router.push('/')
+                }
+            }
+        },
+        methods:{
+            signout(){
+                this.$confirm('Выйти?').then(res => {
+                    if(res){
+                        this.$store.dispatch('signout')
+                    }
+                })
             }
         }
     }
